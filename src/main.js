@@ -1,25 +1,26 @@
 const $siteList = $('.siteList')
-const $lastLi =$siteList.find('li.last')
+const $lastLi = $siteList.find('li.last')
 const x = localStorage.getItem('x')
 const xObjext = JSON.parse(x)
-const hashMap=xObjext || [
-    {logo:'Z',url:'https://www.zhihu.com'},
-    {logo:'B',url:'https://www.bilibili.com'},
+const hashMap = xObjext || [
+    { logo: 'Z', url: 'https://www.zhihu.com' },
+    { logo: 'B', url: 'https://www.bilibili.com' },
+    { logo: 'T', url: 'https://www.taobao.com' },
 ]
 
 
 const simplifyUrl = (url) => {
     return url.replace('https://', '')
-      .replace('http://', '')
-      .replace('www.', '')
-      .replace(/\/.*/, '') // 删除 / 开头的内容
-  }
+        .replace('http://', '')
+        .replace('www.', '')
+        .replace(/\/.*/, '') // 删除 / 开头的内容
+}
 
-const render = ()=>{
+const render = () => {
     $siteList.find('li:not(.last)').remove()
-    hashMap.forEach((node,index)=>{
+    hashMap.forEach((node, index) => {
         const $li = $(
-              `<li>
+            `<li>
                         <div class="site">
                            <div class="logo"> ${node.logo} </div>
                            <div class="link">${simplifyUrl(node.url)}</div>
@@ -32,16 +33,16 @@ const render = ()=>{
                  
                 </li> `).insertBefore($lastLi)
 
-                $li.on('click', ()=>{
-                    window.open(node.url)
-                })
-                 
-                $li.on('click','.close',(e)=>{
-                    e.stopPropagation()
-                    hashMap.splice(index,1)
-                    render()
-            
-                })
+        $li.on('click', () => {
+            window.open(node.url)
+        })
+
+        $li.on('click', '.close', (e) => {
+            e.stopPropagation()
+            hashMap.splice(index, 1)
+            render()
+
+        })
 
     });
 
@@ -49,28 +50,28 @@ const render = ()=>{
 
 render()
 
-$('.addButton').on('click',()=>{
-   let url= window.prompt("请输入你要添加的网址")
-   if(url.indexOf('http')!==0){
-       url='https://'+url
-   }
-   
-  hashMap.push({
-      logo:simplifyUrl(url)[0].toUpperCase(), 
-      url:url
+$('.addButton').on('click', () => {
+    let url = window.prompt("请输入你要添加的网址")
+    if (url.indexOf('http') !== 0) {
+        url = 'https://' + url
+    }
+
+    hashMap.push({
+        logo: simplifyUrl(url)[0].toUpperCase(),
+        url: url
     });
-      
+
     render()
 
 });
-window.onbeforeunload = ()=>{
+window.onbeforeunload = () => {
     const string = JSON.stringify(hashMap)
-    localStorage.setItem('x',string)
+    localStorage.setItem('x', string)
 }
-$(document).on('keypress',(e)=>{
-    const {key}=e
-    for(let i=0;i<hashMap.length;i++){
-        if(hashMap[i].logo.toLowerCase()===key){
+$(document).on('keypress', (e) => {
+    const { key } = e
+    for (let i = 0; i < hashMap.length; i++) {
+        if (hashMap[i].logo.toLowerCase() === key) {
             window.open(hashMap[i].url)
         }
     }
