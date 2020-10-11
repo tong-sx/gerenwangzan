@@ -49,11 +49,11 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
     return cache[name].exports;
 
-    function localRequire(x){
+    function localRequire(x) {
       return newRequire(localRequire.resolve(x));
     }
 
-    function resolve(x){
+    function resolve(x) {
       return modules[name][1][x] || x;
     }
   }
@@ -96,13 +96,13 @@ parcelRequire = (function (modules, cache, entry, globalName) {
     if (typeof exports === "object" && typeof module !== "undefined") {
       module.exports = mainExports;
 
-    // RequireJS
+      // RequireJS
     } else if (typeof define === "function" && define.amd) {
-     define(function () {
-       return mainExports;
-     });
+      define(function () {
+        return mainExports;
+      });
 
-    // <script>
+      // <script>
     } else if (globalName) {
       this[globalName] = mainExports;
     }
@@ -117,66 +117,72 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"epB2":[function(require,module,exports) {
-var $siteList = $('.siteList');
-var $lastLi = $siteList.find('li.last');
-var x = localStorage.getItem('x');
-var xObjext = JSON.parse(x);
-var hashMap = xObjext || [{
-  logo: 'Z',
-  url: 'https://www.zhihu.com'
-}, {
-  logo: 'B',
-  url: 'https://www.bilibili.com'
-}];
+})({
+  "epB2": [function (require, module, exports) {
+    var $siteList = $('.siteList');
+    var $lastLi = $siteList.find('li.last');
+    var x = localStorage.getItem('x');
+    var xObjext = JSON.parse(x);
+    var hashMap = xObjext || [{
+      logo: 'Z',
+      url: 'https://www.zhihu.com'
+    }, {
+      logo: 'B',
+      url: 'https://www.bilibili.com'
+    }, {
+      logo: 'T',
+      url: 'https://www.taobao.com'
+    }
+    ];
 
-var simplifyUrl = function simplifyUrl(url) {
-  return url.replace('https://', '').replace('http://', '').replace('www.', '').replace(/\/.*/, ''); // 删除 / 开头的内容
-};
+    var simplifyUrl = function simplifyUrl(url) {
+      return url.replace('https://', '').replace('http://', '').replace('www.', '').replace(/\/.*/, ''); // 删除 / 开头的内容
+    };
 
-var render = function render() {
-  $siteList.find('li:not(.last)').remove();
-  hashMap.forEach(function (node, index) {
-    var $li = $("<li>\n                        <div class=\"site\">\n                           <div class=\"logo\"> ".concat(node.logo, " </div>\n                           <div class=\"link\">").concat(simplifyUrl(node.url), "</div>\n                           <div class=\"close\">\n                              <svg class=\"icon\" >\n                                 <use xlink:href=\"#icon-close\"></use>\n                              </svg>\n                           </div>                         \n                       </div>\n                 \n                </li> ")).insertBefore($lastLi);
-    $li.on('click', function () {
-      window.open(node.url);
-    });
-    $li.on('click', '.close', function (e) {
-      e.stopPropagation();
-      hashMap.splice(index, 1);
+    var render = function render() {
+      $siteList.find('li:not(.last)').remove();
+      hashMap.forEach(function (node, index) {
+        var $li = $("<li>\n                        <div class=\"site\">\n                           <div class=\"logo\"> ".concat(node.logo, " </div>\n                           <div class=\"link\">").concat(simplifyUrl(node.url), "</div>\n                           <div class=\"close\">\n                              <svg class=\"icon\" >\n                                 <use xlink:href=\"#icon-close\"></use>\n                              </svg>\n                           </div>                         \n                       </div>\n                 \n                </li> ")).insertBefore($lastLi);
+        $li.on('click', function () {
+          window.open(node.url);
+        });
+        $li.on('click', '.close', function (e) {
+          e.stopPropagation();
+          hashMap.splice(index, 1);
+          render();
+        });
+      });
+    };
+
+    render();
+    $('.addButton').on('click', function () {
+      var url = window.prompt("请输入你要添加的网址");
+
+      if (url.indexOf('http') !== 0) {
+        url = 'https://' + url;
+      }
+
+      hashMap.push({
+        logo: simplifyUrl(url)[0].toUpperCase(),
+        url: url
+      });
       render();
     });
-  });
-};
 
-render();
-$('.addButton').on('click', function () {
-  var url = window.prompt("请输入你要添加的网址");
+    window.onbeforeunload = function () {
+      var string = JSON.stringify(hashMap);
+      localStorage.setItem('x', string);
+    };
 
-  if (url.indexOf('http') !== 0) {
-    url = 'https://' + url;
-  }
+    $(document).on('keypress', function (e) {
+      var key = e.key;
 
-  hashMap.push({
-    logo: simplifyUrl(url)[0].toUpperCase(),
-    url: url
-  });
-  render();
-});
-
-window.onbeforeunload = function () {
-  var string = JSON.stringify(hashMap);
-  localStorage.setItem('x', string);
-};
-
-$(document).on('keypress', function (e) {
-  var key = e.key;
-
-  for (var i = 0; i < hashMap.length; i++) {
-    if (hashMap[i].logo.toLowerCase() === key) {
-      window.open(hashMap[i].url);
-    }
-  }
-});
-},{}]},{},["epB2"], null)
+      for (var i = 0; i < hashMap.length; i++) {
+        if (hashMap[i].logo.toLowerCase() === key) {
+          window.open(hashMap[i].url);
+        }
+      }
+    });
+  }, {}]
+}, {}, ["epB2"], null)
 //# sourceMappingURL=main.dbb7f9b3.js.map
